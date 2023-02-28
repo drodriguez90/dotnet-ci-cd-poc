@@ -28,5 +28,5 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: drodriguez90/dotnet-ci-cd-poc:${GITHUB_SHA::7} 
+          tags: drodriguez90/dotnet-ci-cd-poc:${{GITHUB_SHA::7}} 
       
