@@ -1,6 +1,10 @@
 name: CI/CD
 
-on: push
+on: 
+  push:
+    branches:
+        - main
+        - 'dev/**'
 
 jobs:
   build:
@@ -25,3 +29,5 @@ jobs:
         with:
           push: true
           tags: drodriguez90/dotnet-ci-cd-poc:latest  # Please change the username here
+      - name: echoVariables
+        run: echo ${{ github.head_ref }}.${{ github.sha }}
