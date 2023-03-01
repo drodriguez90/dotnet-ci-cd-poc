@@ -38,9 +38,11 @@ jobs:
       - name: Configuration deployment
         run: |
           if [[ $GITHUB_REF == 'refs/heads/main' ]]; then
-              echo "SERVER_HOSTNAME=${{ secrets.MAIN_SERVER_HOSTNAME }}" >> "$GITHUB_ENV"
+              echo "Run Produccion"
+              echo "SERVER_HOSTNAME=164.92.204.193" >> "$GITHUB_ENV"
           else
-              echo "SERVER_HOSTNAME=${{ secrets.DEV_SERVER_HOSTNAME }}" >> "$GITHUB_ENV"
+              echo "Run Dev"
+              echo "SERVER_HOSTNAME=138.68.83.14" >> "$GITHUB_ENV"
           fi
  
           
