@@ -35,14 +35,14 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Configuration for MAIN branch
-        if: ${{ github.ref == 'refs/heads/main' }}
+      - name: Configuration deployment
         run: |
-          echo "SERVER_HOSTNAME=${{ secrets.MAIN_SERVER_HOSTNAME }}" >> $GITHUB_ENV
-      - name: Configuration for DEV branch
-        if: ${{ github.ref == 'refs/heads/dev' }}
-        run: |
-          echo "SERVER_HOSTNAME=${{ secrets.DEV_SERVER_HOSTNAME }}" >> $GITHUB_ENV
+          if [[ $GITHUB_REF == 'refs/heads/main' ]]; then
+              echo "SERVER_HOSTNAME=${{ secrets.MAIN_SERVER_HOSTNAME }}" >> "$GITHUB_ENV"
+          else
+              echo "SERVER_HOSTNAME=${{ secrets.DEV_SERVER_HOSTNAME }}" >> "$GITHUB_ENV"
+          fi
+ 
           
 
   update_server:
