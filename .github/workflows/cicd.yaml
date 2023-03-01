@@ -4,7 +4,7 @@ on:
   push:
     branches:
         - main
-        - 'dev/**'
+        - dev
 
 jobs:
   build:
@@ -29,4 +29,38 @@ jobs:
         with:
           push: true
           tags: drodriguez90/dotnet-ci-cd-poc:${{ github.sha }} 
-      
+  
+  deployconfig:
+    name: Updating prod environment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configuration for MAIN branch
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: |
+          echo "SERVER_HOSTNAME=${{ secrets.MAIN_SERVER_HOSTNAME }}" >> $GITHUB_ENV
+          echo "SERVER_USERNAME=${{ secrets.SERVER_USERNAME }}" >> $GITHUB_ENV
+          echo "SERVER_PASSWORD=${{ secrets.SERVER_PASSWORD }}" >> $GITHUB_ENV
+      - name: Configuration for DEV branch
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: |
+          echo "SERVER_HOSTNAME=${{ secrets.DEV_SERVER_HOSTNAME }}" >> $GITHUB_ENV
+          echo "SERVER_USERNAME=${{ secrets.SERVER_USERNAME }}" >> $GITHUB_ENV
+          echo "SERVER_PASSWORD=${{ secrets.SERVER_PASSWORD }}" >> $GITHUB_ENV
+
+  update_server:
+    name: Updating prod environment
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Replacing container
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ SERVER_HOSTNAME }}
+          username: ${{ SERVER_USERNAME }}
+          password: ${{ SERVER_PASSWORD }}
+          script: |
+            docker image pull drodriguez90/dotnet-ci-cd-poc:${{ github.sha }}
+            docker container stop mywebapp
+            docker container prune -f
+            docker run -d --name mywebapp --restart unless-stopped -p 80:80 -p 443:443 drodriguez90/dotnet-ci-cd-poc:${{ github.sha }}
+            docker image prune -f   
