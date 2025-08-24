@@ -1,0 +1,10 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: dotnet-ci-cd-poc
+  annotations:
+    github.com/project-slug: drodriguez90/dotnet-ci-cd-poc
+spec:
+  type: other
+  lifecycle: unknown
+  owner: guests
